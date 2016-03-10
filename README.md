@@ -1,4 +1,4 @@
 # eStore
-implemented by Django
+implemented by Django;
 use pymysql instead of mysqldb
 
