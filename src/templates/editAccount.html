@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<div class="row">
+	<div class="col-xs-3 col-xs-offset-4">
+		<h4>修改相关信息</h4>
+		<form method='POST' action=''>{% csrf_token %}
+			{{ updateform|crispy }}		
+			<input type='submit' name="updateaccount" class="btn btn-success col-lg-offset-8" value="提交" />
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-3 col-xs-offset-4">
+		<h4>历史消费：{{ c_Cost}}</h4>
+		<h4>会员等级：{{ m_Level}}</h4>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-3 col-xs-offset-4">
+		<a href="{% url 'Customer:change_password' %}"><button class="btn btn-success col-lg-offset-8">修改密码</button></a>
+	</div>
+</div>
+
+{% endblock %}

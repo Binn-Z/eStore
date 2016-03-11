@@ -21,7 +21,7 @@ class Customer(models.Model):
 class Member(models.Model):
 	m_Description=models.CharField(max_length=100,blank=True,verbose_name='等级描述')
 	m_Discount=models.FloatField(verbose_name='优惠')
-	m_Level=models.IntegerField(verbose_name='会员等级')
+	m_Level=models.IntegerField(primary_key=True,verbose_name='会员等级')
 
 	def __str__(self):
 		return str(self.m_Level)

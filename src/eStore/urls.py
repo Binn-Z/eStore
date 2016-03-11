@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^Customer/',include('Customer.urls')),
+    url(r'^Customer/',include('Customer.urls',namespace="Customer")),
     # url(r'^Comment/',include('Comment.urls')),
     # url(r'^Distribution/',include('Disatribution.urls')),
     # url(r'^Goods/',include('Goods.urls')),

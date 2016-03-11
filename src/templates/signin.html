@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<div class="row">
+	<div class="col-xs-3 col-xs-offset-4">
+		<h4>用户登录</h4>
+		<form method='POST' action=''>{% csrf_token %}
+			{{ form|crispy }}		
+			<input type='submit' name="signinaccount" class="btn btn-success col-lg-offset-7" value="提交" />
+		</form>
+	</div>
+</div>
+
+<br><br>
+
+
+{% endblock %}
