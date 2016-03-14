@@ -1,0 +1,25 @@
+
+
+{% if is_paginated %}
+<div class="row pagination-wrap">
+    <ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li style="float:left"><a href="?page={{ page_obj.previous_page_number }}">上一页&nbsp;</a></li>
+    {% endif %}
+    {% for page in page_numbers %}
+        {% if page %}
+            {% ifequal page page_obj.number %}
+                <li class="disabled" style="float:left" ><a href="#">{{ page }} &nbsp;</a></li>
+            {% else %}
+                <li style="float:left"><a href="?page={{ page }}" >{{ page }} &nbsp;</a></li>
+            {% endifequal %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <li style="float:left"><a href="?page={{ page_obj.next_page_number }}">下一页&nbsp;</a></li>
+    {% endif %}
+    </ul>
+</div>
+{% endif %}

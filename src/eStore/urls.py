@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^Customer/',include('Customer.urls',namespace="Customer")),
     # url(r'^Comment/',include('Comment.urls')),
     # url(r'^Distribution/',include('Disatribution.urls')),
-    # url(r'^Goods/',include('Goods.urls')),
+    url(r'^Goods/',include('Goods.urls',namespace="Goods")),
     # url(r'^Orders/',include('Orders.urls')),
 ]
 

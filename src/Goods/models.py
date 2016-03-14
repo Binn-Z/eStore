@@ -1,9 +1,11 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 class Goods(models.Model):
 	g_Name=models.CharField(max_length=20,verbose_name='商品名称')
 	g_Price=models.DecimalField(max_digits=6,decimal_places=2,verbose_name='商品售价')
+	g_Description=models.TextField(blank=True,verbose_name='商品描述')
 	g_Cost=models.DecimalField(max_digits=6,decimal_places=2,verbose_name='商品成本')
 	g_Picture=models.ImageField(upload_to='photos/',verbose_name='商品图片')
 	g_Num=models.IntegerField(verbose_name='商品库存')
