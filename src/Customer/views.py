@@ -32,11 +32,11 @@ def signin(request):
 			if user is not None: #登陆成功
 				login(request,user)
 			else:
-				return render(request,'signin.html',{'form': SigninForm(),"success":False})
+				return render(request,'signin.html',{'form': SigninForm(),"success_or_first":False})
 			return HttpResponseRedirect(reverse("Goods:index")) #回到主页
 	else:
 		form = SigninForm() 
-	return render(request,'signin.html',{'form': form})
+	return render(request,'signin.html',{'form': form,"success_or_first":True})
 
 #登出账号
 def logoutAccount(request):

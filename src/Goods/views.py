@@ -3,7 +3,7 @@ from  django.views.generic.list import ListView
 from  django.views.generic.detail import DetailView
 
 from .models import Goods,Goods_Type
-
+from Comment.models import Comment
 # Create your views here.
 
 class Goods_ListView(ListView):
@@ -25,5 +25,6 @@ class Goods_DetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(Goods_DetailView, self).get_context_data(**kwargs)
+		context['comment_list']=Comment.objects.filter(g_Id__exact=kwargs['object'].id)
 		return context
 

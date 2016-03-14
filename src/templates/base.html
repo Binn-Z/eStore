@@ -9,7 +9,7 @@
     <meta name="author" content="Binn">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>{% block title %} base{% endblock %}</title>
+    <title>{% block title %} {% endblock %}</title>
 
     {% include "css.html" %}
     
@@ -24,7 +24,7 @@
       {% endblock %}
     </div> <!-- /container -->
 
-
+    {% block script %}{% endblock %}
     {% include "js.html" %}
   </body>
 </html>

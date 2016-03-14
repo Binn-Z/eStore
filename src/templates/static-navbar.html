@@ -31,6 +31,7 @@
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
                 <li><a href="#">购物车</a></li>
+                <li><a href="#">我的订单</a></li>
                 <li><a href="{% url 'Customer:logout' %}">退出登录</a></li>
                 <li><a href="{% url 'Customer:edit' %}">个人账户</a></li>
               {% else %}

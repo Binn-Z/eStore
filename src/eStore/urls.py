@@ -23,7 +23,7 @@ urlpatterns = [
     # url(r'^Comment/',include('Comment.urls')),
     # url(r'^Distribution/',include('Disatribution.urls')),
     url(r'^Goods/',include('Goods.urls',namespace="Goods")),
-    # url(r'^Orders/',include('Orders.urls')),
+    url(r'^Orders/',include('Orders.urls',namespace="Orders")),
 ]
 
 if settings.DEBUG:

@@ -1,5 +1,4 @@
-from django.conf.urls import patterns, url, include
-from django.contrib.auth import views
+from django.conf.urls import patterns, url
 
 from .views import register,signin,logoutAccount,editAccount,change_password
 
