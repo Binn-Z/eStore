@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content%}
-
-	{% for object in object_list%}
-		{{object.id}}
-	{% endfor %}
-
+	{% if is_login %}
+		{% for object in object_list%}
+			{{object.id}}
+		{% endfor %}
+	{% else %}
+ 		<h2 style="text-align:center">您未登录</h2>
+ 	{% endif %}
 {% endblock%}

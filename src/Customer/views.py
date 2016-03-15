@@ -52,7 +52,7 @@ def logoutAccount(request):
 def editAccount(request):
 	userId = request.user.id
 	query = User.objects.get(id=userId)   #获取登录user
-	c_Phone = query.email
+	c_Phone = query.username
 	obj = Customer.objects.get(c_Phone=c_Phone)
 	updateform = UpdateForm(request.POST or None, initial={'c_Name': obj.c_Name, 'c_Address': obj.c_Address})
 	context = {
