@@ -24,26 +24,19 @@
 
     <div class="row">
       <div class="grid-options col-sm-3">
-
         <h3>Categories</h3>
         <ul class="options-list options-categories">
-          <li><a href="#">Option 1</a></li>
           <li><a href="#">Option 2</a></li>
           <li><a href="#">Option 3</a></li>
           <li><a href="#">Option 4</a></li>
           <li><a href="#">Option 5</a></li>
-          
         </ul>
 
         <h3>类别</h3>
         <ul class="options-list options-brands">
         {% for type in goods_types %}
           <li><a href="#">{{ type.t_Name }}</a></li>
-        {% endfor %}
-          <!-- <li><a href="#">Option 1</a></li>
-          <li><a href="#">Option 2</a></li>
-          <li><a href="#">Option 3</a></li>
-          <li><a href="#">Option 4</a></li>   -->   
+        {% endfor %} 
         </ul>
 
 
@@ -51,21 +44,13 @@
       <div class="products-grid col-sm-9">
         <div class="row">
           {% for goods in object_list %}
-            <!-- <div class="product-item col-sm-4">
-              <a href="#"  ><img src={{ goods.g_Picture.url}} alt="sample product"  width="100" height="180" /></a>
-              <h2><a href="#">{{ goods.g_Name }} &nbsp; ¥{{ goods.g_Price }}</a></h2>
-              <p>This text describes the above product a little not too much</p>
-              <a class="btn btn-default btn-xs pull-right" href="#">View this product <i class="fa fa-arrow-circle-right"></i></a>
-            </div> -->
-
-
             <div class="product-item col-sm-4">
               <a href="{% url 'Goods:detail' goods.id %}"  ><img src={{ goods.g_Picture.url}} alt="sample product"  width="70%" height="70%" />
               <h2 align="center">{{ goods.g_Name }} &nbsp;&nbsp;&nbsp;&nbsp; ¥{{ goods.g_Price }}</h2>
               <p>{{ goods.g_Description }}</p>
               <i class="fa fa-arrow-circle-right"></i>
               </a>
-              <a class="btn btn-default btn-xs pull-right " href="#">加入购物车 <i class="fa fa-arrow-circle-right"></i></a>
+              <a class="btn btn-default btn-xs pull-right " href="#">加入购物车<i class="fa fa-arrow-circle-right"></i></a>
             </div>
           {% endfor %}
         </div><!-- /.row -->
@@ -76,6 +61,5 @@
     </div><!-- /.row -->
   </div><!-- /.container -->
 </main>
-
 
 {% endblock %}
