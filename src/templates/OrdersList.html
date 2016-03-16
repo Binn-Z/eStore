@@ -2,9 +2,23 @@
 
 {% block content%}
 	{% if is_login %}
-		{% for object in object_list%}
-			{{object.id}}
+	<div class='row'>
+		{% for object in object_list%}	
+			<div class=" col-sm-4 col-lg-offset-4" >
+			<table border="1">
+				<tr>
+					<td>{{object.g_Id}}</td>
+					<td>{{object.o_Amount}}</td>
+					<td>{{object.o_Address}}</td>
+					<td>{{object.o_Description}}</td>
+					<td>{{object.o_Contact}}</td>
+					<td>{{object.o_total}}</td>
+					<td>{{object.o_Date}}</td>
+				</tr>
+			</table>
+            </div>
 		{% endfor %}
+	</div>
 	{% else %}
  		<h2 style="text-align:center">您未登录</h2>
  	{% endif %}
