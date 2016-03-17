@@ -12,7 +12,7 @@
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="{% url 'Goods:index' 'Sort' 0  %}">主页</a></li>
+              <li class="active"><a href="{% url 'Goods:index' 0 0  %}">主页</a></li>
               <li><a href="#">About</a></li>
               <li><a href="#">Contact</a></li>
               <li class="dropdown">
@@ -31,11 +31,12 @@
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
                 <li><a href="{% url 'Orders:cart' %}">购物车</a></li>
-                <li><a href="{% url 'Orders:orders' %}">我的订单</a></li>
+                <li><a href="{% url 'Orders:list' %}">我的订单</a></li>
                 <li><a href="{% url 'Customer:logout' %}">退出登录</a></li>
                 <li><a href="{% url 'Customer:edit' %}">个人账户</a></li>
               {% else %}
                 <li><a href="{% url 'Customer:signin' %}">登录</a></li>
+                <li><a href="{% url 'Customer:register' %}">注册</a></li>
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->

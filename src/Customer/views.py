@@ -33,7 +33,7 @@ def signin(request):
 				login(request,user)
 			else:
 				return render(request,'signin.html',{'form': SigninForm(),"success_or_first":False})
-			return HttpResponseRedirect(reverse("Goods:index")) #回到主页
+			return HttpResponseRedirect(reverse("Goods:index",kwargs={'sort': 0,'filter':0})) #回到主页
 	else:
 		form = SigninForm() 
 	return render(request,'signin.html',{'form': form,"success_or_first":True})
@@ -70,8 +70,7 @@ def editAccount(request):
 	if 'updateaccount' in request.POST:   #提交更新
 		if updateform.is_valid():
 			cd = updateform.cleaned_data
-			Customer.objects.filter(c_Phone=c_Phone).update(c_Name=cd.get('c_Name'), c_Address=cd.get('c_Address'), c_Password=cd.get('c_Password'))
-			query.delete()			
+			Customer.objects.filter(c_Phone=c_Phone).update(c_Name=cd.get('c_Name'), c_Address=cd.get('c_Address'), c_Password=cd.get('c_Password'))			
 	return render(request, "editAccount.html", context)
 
 #修改密码 changepassword_status：0(初始表单) -1(修改密码失败)  1(修改密码成功)

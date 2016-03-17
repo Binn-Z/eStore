@@ -7,11 +7,12 @@ from .models import Goods,Goods_Type
 from Customer.models import Customer
 from Comment.models import Comment
 from Orders.models import Orders
+from urllib.parse import unquote
+import re
 # Create your views here.
 
 def addCart(request,**kwargs):
 	if request.method=='POST':
-		print(request.POST)
 		userid=request.user.id
 		if  userid != None:   			#获取当前登录用户
 			c_Phone = User.objects.get(id=userid).username
@@ -29,25 +30,32 @@ class Goods_ListView(ListView):
 	model=Goods
 	template_name="GoodsList.html"
 	paginate_by=9
+	
 
 	def get_queryset(self):
-		if self.kwargs.get('method')=='Sort':
-			print(type(self.kwargs.get('arg')))
-			if self.kwargs.get('arg')=='0':    #默认排序
-				return Goods.objects.all()
-			elif self.kwargs.get('arg')=='1':  #价格升序
-				return Goods.objects.all().order_by('g_Price')
-			elif self.kwargs.get('arg')=='2':  #价格降序
-				return Goods.objects.all().order_by('-g_Price')
-			else:								#折扣最多
-				return Goods.objects.all().order_by('g_Discount')
+		if self.request.META.get('HTTP_REFERER')==None or re.match(r".*?key=(.*)", self.request.META.get('HTTP_REFERER'))==None :  #last_key:前一次操作中搜索的额关键字
+			last_key=''
 		else:
-			# return Goods.objects.filter(g_Id__exact=self.kwargs.get('arg'))
-			return Goods.objects.filter(t_Id__exact=self.kwargs.get('arg'))
+			last_key=unquote(re.match(r".*?key=(.*)",self.request.META.get('HTTP_REFERER')).group(1))
+		key=self.request.GET.get('key',last_key)
+		if self.kwargs.get('filter')==None or self.kwargs.get('filter')=='0':
+			queryset=Goods.objects.filter(g_Name__contains=key)
+		else :
+			queryset=Goods.objects.filter(t_Id__exact=self.kwargs.get('filter'),g_Name__contains=key)
+		if self.kwargs.get('sort')=='3':    #折扣最多
+			return queryset.order_by('g_Discount')
+		elif self.kwargs.get('sort')=='1':  #价格升序
+			return queryset.order_by('g_Price')
+		elif self.kwargs.get('sort')=='2':  #价格降序
+			return queryset.order_by('-g_Price')
+		else:								#默认排序
+			return queryset
 
 	def get_context_data(self, **kwargs):
 		context = super(Goods_ListView, self).get_context_data(**kwargs)
 		context['goods_types'] = Goods_Type.objects.all()
+		context['sort_now']= 0 if re.match(r'/\w+/(\d+)/\d+', self.request.path)==None else re.match(r'/\w+/(\d+)/\d+', self.request.path).group(1) 
+		context['filter_now']=0 if re.match(r'/\w+/\d+/(\d+)', self.request.path)==None else re.match(r'/\w+/\d+/(\d+)', self.request.path).group(1) 
 		return context
 
 	

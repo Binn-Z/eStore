@@ -2,78 +2,296 @@
 
 {% block content%}
 {% if is_login %}
-<div class='row'>
-	<div class=" col-sm-4 col-lg-offset-4" >
-		<table border="1">
+<div class="catbox row">
+	<table id="cartTable"  >
+		<thead>
 			<tr>
-				<td>商品名称</td>
-				<td>商品单价</td>
-				<td>优惠信息</td>
-				<td>商品数量</td>
-				<td>总金额</td>
+				<th><label><input class="check-all check" type="checkbox"/>&nbsp;全选</label></th>
+				<th>商品</th>
+				<th>单价</th>
+				<th>优惠</th>
+				<th>数量</th>
+				<th>小计</th>
+				<th>操作</th>
 			</tr>
-	{% for object in object_list%}	
-			<tr>
-				<td>{{object.g_Id}}</td>
-				<td>{{object.g_Id.g_Price}}</td>
-				<td>*{{object.g_Id.g_Discount}}</td>
-				<td>{{object.o_Amount}}</td>
-				<td>{{object.o_total}}</td>
-			</tr>
-		</table>
+		</thead>
+		<tbody>
+		{% for object in object_list %}
+			<tr >
+				<td  class="checkbox"><input class="check-one check" type="checkbox"/></td>
+				<td  class="goods"><a href="{% url 'Goods:detail' object.g_Id.id %}"><img src="{{object.g_Id.g_Picture.url}}" alt='{{object.id}}'/><span>{{object.g_Id.g_Name}}</span></a></td>
+				<td class="price">{{object.g_Id.g_Price}}</td>
+				<td class="discount">{{object.g_Id.g_Discount}} </td>
+				<td class="count"><span class="reduce"></span><input class="count-input" type="text" value="{{object.o_Amount}}"/><span class="add">+</span></td>
+				<td class="subtotal">{{object.o_total}}</td>
+				<td class="operation"><span class="delete">删除</span></td>
+			</tr>	
+		{% endfor %}				
+		</tbody>
+	</table>
+	
+	<div class="foot" id="foot">
+		<label class="fl select-all"><input type="checkbox" class="check-all check"/>&nbsp;全选</label>
+		<a class="fl delete" id="deleteAll" href="javascript:;">删除</a>
+		<div class="fr closing" id="pay">结 算</div>
+		<div class="fr total">合计：￥<span id="priceTotal">0.00</span></div>
+		<div class="fr selected" id="selected">已选商品<span id="selectedTotal">0</span>件<span class="arrow up">︽</span><span class="arrow down">︾</span></div>
+		<div class="selected-view">
+			<div id="selectedViewList" class="clearfix">
+				<div><span>取消选择</span></div>
+			</div>
+			<span class="arrow">◆<span>◆</span></span>
+		</div>
 	</div>
-	{% endfor %}
+
 </div>
+
 {% else %}
 <h2 style="text-align:center">您未登录</h2>
 {% endif %}
 
-<div class="bookNum">
-	<input id="min" name="" type="button" value="-" >  
-	<input id="num" name="num" type="text" value="1" readonly="true" onchange="setTotal();" >  
-	<input id="add" name="" type="button" value="+" > 
+<div id="dialog-form" title="创建新用户">
+  <form id="dialogForm">
+    <label for="contact">联系方式</label>
+    <input type="text" name="contact" id="form-contact" value="{{ customer.c_Phone}}" class="text ui-widget-content ui-corner-all"><br>
+    <label for="address">&nbsp;&nbsp;&nbsp;地址&nbsp;&nbsp;&nbsp;</label>
+    <input type="text" name="address" id="form-address" value="{{ customer.c_Address }}" class="text ui-widget-content ui-corner-all"><br>
+    <label for="description">&nbsp;&nbsp;&nbsp;备注&nbsp;&nbsp;&nbsp;</label>
+    <input type="text" name="description" id="form-description" value="" class="text ui-widget-content ui-corner-all">
+  </form>
 </div>
-
 
 {% endblock%}
 
 {% block script %}
 <script type="text/javascript">
- 	//根据选择的数量计算总价，并显示出来  
- 	function setTotal(){  
- 		var t = $("#num");  
-        var tmp = document.getElementById("totalPrice");//需要修改的总价位置1  
-        var tmp1 = document.getElementById("totalPrice1");//需要修改的总价位置2  
-        if(/\D/.test(t.val())){//检查用户输入的值是否是数字  
-        	alert("请您输入正确的数量！");  
-        	t.val(1);  
-        	tmp.innerHTML = "2488元";  
-        	tmp1.innerHTML = "2488元";  
-        }  
-        else{//如果输入合法             
-        	if(t.val() > 10){  
-        		confirm("您真的准备一次购买这么多？");  
-        		tmp.innerHTML = t.val()*2488 +"元";  
-        		tmp1.innerHTML = t.val()*2488 +"元";  
-        	}  
-        }  
-    }  
+$.ajaxSetup({
+    data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
+ 	window.onload = function () {
+    if (!document.getElementsByClassName) {
+        document.getElementsByClassName = function (cls) {
+            var ret = [];
+            var els = document.getElementsByTagName('*');
+            for (var i = 0, len = els.length; i < len; i++) {
 
-$(function(){ //这里是加减按钮都启用的情况  
-	var t = $("#num");   
-	$("#add").click(function(){       
-		t.val(parseInt(t.val())+1)  
-		setTotal();  
-	})  
-	$("#min").click(function(){  
-		if(t.val()>1){  
-			t.val(parseInt(t.val())-1);  
-		}  
-		else{  
-			alert("至少购买一件哦！");  
-		}  
-        //setTotal();  
-    })  
-});  
+                if (els[i].className.indexOf(cls + ' ') >=0 || els[i].className.indexOf(' ' + cls + ' ') >=0 || els[i].className.indexOf(' ' + cls) >=0) {
+                    ret.push(els[i]);
+                }
+            }
+            return ret;
+        }
+    }
+
+    var table = document.getElementById('cartTable'); // 购物车表格
+    var selectInputs = document.getElementsByClassName('check'); // 所有勾选框
+    var checkAllInputs = document.getElementsByClassName('check-all') // 全选框
+    var tr = table.children[1].rows; //行
+    var selectedTotal = document.getElementById('selectedTotal'); //已选商品数目容器
+    var priceTotal = document.getElementById('priceTotal'); //总计
+    var deleteAll = document.getElementById('deleteAll'); // 删除全部按钮
+    var selectedViewList = document.getElementById('selectedViewList'); //浮层已选商品列表容器
+    var selected = document.getElementById('selected'); //已选商品
+    var foot = document.getElementById('foot');
+    var pay=document.getElementById('pay');   //结算商品
+
+    // 更新总数和总价格，已选浮层
+    function getTotal() {
+		var seleted = 0;
+		var price = 0;
+		var HTMLstr = '';
+		for (var i = 0, len = tr.length; i < len; i++) {
+			if (tr[i].getElementsByTagName('input')[0].checked) {
+				tr[i].className = 'on';
+				seleted += parseInt(tr[i].getElementsByTagName('input')[1].value);
+				price += parseFloat(tr[i].cells[5].innerHTML);
+				HTMLstr += '<div><img src="' + tr[i].getElementsByTagName('img')[0].src + '"><span class="del" index="' + i + '">取消选择</span></div>'
+			}
+			else {
+				tr[i].className = '';
+			}
+		}
+	
+		selectedTotal.innerHTML = seleted;
+		priceTotal.innerHTML = price.toFixed(2);
+		selectedViewList.innerHTML = HTMLstr;
+	
+		if (seleted == 0) {
+			foot.className = 'foot';
+		}
+	}
+
+    // 计算单行价格
+    function getSubtotal(tr) {
+        var cells = tr.cells;
+        var price = cells[2]; //单价
+        var subtotal = cells[5]; //小计td
+        var discount=cells[3]; //折扣
+        var countInput = tr.getElementsByTagName('input')[1]; //数目input
+        var span = tr.getElementsByTagName('span')[1]; //-号
+        //写入HTML
+        subtotal.innerHTML = (parseInt(countInput.value) * parseFloat(price.innerHTML) * parseFloat(discount.innerHTML)).toFixed(2);
+        //如果数目只有一个，把-号去掉
+        if (countInput.value == 1) {
+            span.innerHTML = '';
+        }else{
+            span.innerHTML = '-';
+        }
+    }
+
+    // 点击选择框
+    for(var i = 0; i < selectInputs.length; i++ ){
+        selectInputs[i].onclick = function () {
+            if (this.className.indexOf('check-all') >= 0) { //如果是全选，则吧所有的选择框选中
+                for (var j = 0; j < selectInputs.length; j++) {
+                    selectInputs[j].checked = this.checked;
+                }
+            }
+            if (!this.checked) { //只要有一个未勾选，则取消全选框的选中状态
+                for (var i = 0; i < checkAllInputs.length; i++) {
+                    checkAllInputs[i].checked = false;
+                }
+            }
+            getTotal();//选完更新总计
+        }
+    }
+
+    // 显示已选商品弹层
+    selected.onclick = function () {
+        if (selectedTotal.innerHTML != 0) {
+            foot.className = (foot.className == 'foot' ? 'foot show' : 'foot');
+        }
+    }
+
+    //已选商品弹层中的取消选择按钮
+    selectedViewList.onclick = function (e) {
+        var e = e || window.event;
+        var el = e.srcElement;
+        if (el.className=='del') {
+            var input =  tr[el.getAttribute('index')].getElementsByTagName('input')[0]
+            input.checked = false;
+            input.onclick();
+        }
+    }
+
+    //为每行元素添加事件
+    for (var i = 0; i < tr.length; i++) {
+        //将点击事件绑定到tr元素
+        tr[i].onclick = function (e) {
+            var e = e || window.event;
+            var el = e.target || e.srcElement; //通过事件对象的target属性获取触发元素
+            var cls = el.className; //触发元素的class
+            var countInout = this.getElementsByTagName('input')[1]; // 数目input
+            var value = parseInt(countInout.value); //数目
+            //通过判断触发元素的class确定用户点击了哪个元素
+            switch (cls) {
+                case 'add': //点击了加号
+                    countInout.value = value + 1;
+                    getSubtotal(this);
+                    break;
+                case 'reduce': //点击了减号
+                    if (value > 1) {
+                        countInout.value = value - 1;
+                        getSubtotal(this);
+                    }
+                    break;
+                case 'delete': //点击了删除
+                    var conf = confirm('确定删除此商品吗？');
+                    
+                    if (conf) {
+                    	var jqxhr = $.post('delete/', {
+                    		id:this.getElementsByTagName('img')[0].getAttribute("alt"),
+                    	}).fail(function (xhr, status) {
+                    		alert('失败: ' + xhr.status + ', 原因: ' + status);
+                    	});
+                    	this.parentNode.removeChild(this);
+                    }
+                    break;
+            }
+            getTotal();
+        }
+        // 给数目输入框绑定keyup事件
+        tr[i].getElementsByTagName('input')[1].onkeyup = function () {
+            var val = parseInt(this.value);
+            if (isNaN(val) || val <= 0) {
+                val = 1;
+            }
+            if (this.value != val) {
+                this.value = val;
+            }
+            getSubtotal(this.parentNode.parentNode); //更新小计
+            getTotal(); //更新总数
+        }
+    }
+
+    // 点击全部删除
+    deleteAll.onclick = function () {
+        if (selectedTotal.innerHTML != 0) {
+            var con = confirm('确定删除所选商品吗？'); //弹出确认框
+            if (con) {
+                for (var i = 0; i < tr.length; i++) {
+                    // 如果被选中，就删除相应的行
+                    if (tr[i].getElementsByTagName('input')[0].checked) {
+                    	var jqxhr = $.post('delete/', {
+                    		id:tr[i].getElementsByTagName('img')[0].getAttribute("alt"),
+                    	})
+                        tr[i].parentNode.removeChild(tr[i]); // 删除相应节点
+                        i--; //回退下标位置
+                    }
+                }
+            }
+        } else {
+            alert('请选择商品！');
+        }
+        getTotal(); //更新总数
+    }
+
+//点击结算弹出表单
+ $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 350,
+      modal: true,
+      buttons: {
+        "确认": function() {
+          for (var i = 0; i < tr.length; i++) {
+                    // 如果被选中，就删除相应的行
+                    if (tr[i].getElementsByTagName('input')[0].checked) {
+                    	var jqxhr = $.post('pay/', {
+                    		id:tr[i].getElementsByTagName('img')[0].getAttribute("alt"),
+                    		amount:tr[i].getElementsByTagName('input')[1].value,
+                    		total:tr[i].getElementsByClassName('subtotal')[0].innerHTML,
+                    		contact:$( "#form-contact" ).attr("value"),
+                    		address:$( "#form-address" ).attr("value"),
+                    		description:$( "#form-description" ).attr("value")
+
+                    	})
+                        tr[i].parentNode.removeChild(tr[i]); // 删除相应节点
+                        i--; //回退下标位置
+                    }
+                }
+            $( "#dialog-form" ).dialog("close")
+ 
+        },
+        "取消": function() {
+          $( "#dialog-form" ).dialog("close")
+        }
+      }
+      
+    }); 
+
+    //点击结算
+    pay.onclick=function(){
+    	if (priceTotal.innerHTML != 0) {
+    	$("#dialog-form").dialog( "open" );
+        } else {
+            alert('请选择商品！');
+         }
+    }
+
+    // 默认全选
+    checkAllInputs[0].checked = true;
+    checkAllInputs[0].onclick();
+}
 </script>
 {% endblock %}

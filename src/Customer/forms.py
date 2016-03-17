@@ -7,9 +7,12 @@ class ChangepasswordForm(forms.Form):
     new_password1 = forms.CharField(label=(u"新密码确认"),max_length=30,widget=forms.PasswordInput(attrs={'size': 20,})) 
 
 class RegisterForm(forms.ModelForm):
-	class Meta:
-		model = Customer
-		fields = ['c_Name','c_Phone','c_Password','c_Address']
+    class Meta:
+        model = Customer
+        fields = ['c_Name','c_Phone','c_Password','c_Address']
+        widgets = {
+                "c_Password": forms.PasswordInput
+            }
 
 class SigninForm(forms.Form):
 	c_Phone=forms.CharField(widget = forms.TextInput,label='手机号码')

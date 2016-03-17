@@ -78,9 +78,17 @@
 		line-height: 1.3;
 		color: @gray;
   }
-  i {
-
-  }
+  a {
+				
+				color: @gray;
+				&:hover,
+				&:focus,
+				&:active,
+				.active & {
+					color: @link-color;
+				}
+				
+			}
 }
 
 @media (min-width: @screen-sm-min) {

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{object.id}}{% endblock %}
+{% block content %}
+<div class="row">
+	<section class="content-primary col-md-5">
+		<div id="homepage-feature" >
+			<img src="{{ object.g_Id.g_Picture.url}}" alt="Holder Image" width="80%" height="100%">
+		</div><!-- /#homepage-feature.carousel -->
+
+		<h2 align="center">{{ object.g_Id.g_Name }}</h2>
+	</section>
+
+	<section class="content-secondary col-md-5 col-md-offset-2" >
+		<font size="5" style="line-height:45px;" >
+			&nbsp;
+			<p>单价:&nbsp; ¥{{ object.g_Id.g_Price }}</p>
+			<p>数量:&nbsp; ¥{{ object.o_Amount }}</p>
+			<p>促销信息:&nbsp; {{ object.g_Id.g_Discount }}</p>
+			<p>合计:&nbsp; {{ object.o_total  }}</p>
+			<p>联系方式:&nbsp; {{ object.o_Contact }}</p>
+			<p>送货地址:&nbsp; {{ object.o_Address }}</p>
+			<p>备注:&nbsp; {{ object.o_Description }}</p>
+			<p>日期:&nbsp; {{ object.o_Date }}</p>
+		</font>
+	</section>
+</div>
+{% endblock %}

@@ -1,25 +1,39 @@
 {% extends "base.html" %}
 
 {% block content%}
-	{% if is_login %}
-	<div class='row'>
-		{% for object in object_list%}	
-			<div class=" col-sm-4 col-lg-offset-4" >
-			<table border="1">
-				<tr>
-					<td>{{object.g_Id}}</td>
-					<td>{{object.o_Amount}}</td>
-					<td>{{object.o_Address}}</td>
-					<td>{{object.o_Description}}</td>
-					<td>{{object.o_Contact}}</td>
-					<td>{{object.o_total}}</td>
-					<td>{{object.o_Date}}</td>
-				</tr>
-			</table>
-            </div>
-		{% endfor %}
-	</div>
-	{% else %}
- 		<h2 style="text-align:center">您未登录</h2>
- 	{% endif %}
+{% if is_login %}
+<div class="catbox row">
+	<table id="cartTable"  >
+		<thead>
+			<tr>
+				<th>商品</th>
+				<th>数量</th>
+				<th>合计</th>
+				<th>联系方式</th>
+				<th>送货地址</th>
+				<th>备注</th>
+				<th>日期</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for object in object_list %}
+			<tr>
+				<td  class="goods"><a href="{% url 'Orders:detail' object.id %}"><img src="{{object.g_Id.g_Picture.url}}" alt='{{object.id}}'/><span>{{object.g_Id.g_Name}}</span></a></td>
+				<td class="amount">{{object.o_Amount}}</td>
+				<td class="total">{{object.o_total}} </td>
+				<td class="contact">{{object.o_Contact}}</td>
+				<td class="adress">{{object.o_Address}}</td>
+				<td class="description">{{object.o_Description}}</td>
+				<td class="date">{{object.o_Date}}</td>
+			</tr>	
+			{% endfor %}				
+		</tbody>
+	</table>
+</div>
+{% else %}
+<h2 style="text-align:center">您未登录</h2>
+{% endif %}
+		{% load paginator_tags %}
+
+        {% get_pagination 2 1 %}
 {% endblock%}

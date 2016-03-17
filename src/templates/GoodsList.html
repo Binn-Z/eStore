@@ -2,6 +2,7 @@
 
 
 {% block content %}
+
 <style type="text/css">
   .breadcrumb{
     padding: 0;
@@ -12,48 +13,61 @@
   }
 </style>
 <main role="main">
-  <div class="container">
-
-    <ul class="breadcrumb" padding:0>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Parent Category</a></li>
-      <li class="active">Current Category</li>
-    </ul>
-
-    <h1>Product Category Name</h1>
-
+  <div  class="container">
+    <div class="row">
+      <div class="col-xs-8 col-xs-offset-3" >
+        <div class="input-group">
+        <form method="GET" >
+        <table >
+          <tr>
+            <td width="400"><input id="key" type="text" name='key' class="form-control" ></td>
+            <td><input id="search" class="btn btn-danger" type="submit" value="搜索"> </td>
+          </tr>
+        </table>                   
+          </form>  
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-6 -->
+    </div>
+<br>
+<br>
     <div class="row">
       <div class="grid-options col-sm-3">
 
         <h3 style="margin-left:60px"> 排序方式</h3>
         <ul class="options-list options-categories">
-          <li><a href="{% url 'Goods:index' 'Sort' 0 %}">默认排序</a></li>
-          <li><a href="{% url 'Goods:index' 'Sort' 1 %}">价格升序</a></li>
-          <li><a href="{% url 'Goods:index' 'Sort' 2 %}">价格降序</a></li>
-          <li><a href="{% url 'Goods:index' 'Sort' 3 %}">折扣最多</a></li>
+          <li><a href="{% url 'Goods:index' sort=0 filter=filter_now %}">默认排序</a></li>
+          <li><a href="{% url 'Goods:index' sort=1 filter=filter_now %}">价格升序</a></li>
+          <li><a href="{% url 'Goods:index' sort=2 filter=filter_now %}">价格降序</a></li>
+          <li><a href="{% url 'Goods:index' sort=3 filter=filter_now %}">折扣最多</a></li>
           
         </ul>
 
         <h3 style="margin-left:78px">类别</h3>
         <ul class="options-list options-brands">
-        {% for type in goods_types %}
-          <li><a href="{% url 'Goods:index' 'Filter' type.id %}">{{ type.t_Name }}</a></li>
-        {% endfor %} 
+          <li><a href="{% url 'Goods:index' sort=sort_now filter=0 %}">全部</a></li>
+          {% for type in goods_types %}
+          <li><a href="{% url 'Goods:index' sort=sort_now filter=type.id %}">{{ type.t_Name }}</a></li>
+          {% endfor %} 
         </ul>
 
 
       </div><!-- /.products-grid-options -->
       <div class="products-grid col-sm-9">
         <div class="row">
+        {% if  object_list.count == 0 %}
+          <h2 style="text-align:center; color:red ">未找到该商品</h2>
+        
+        {% else %}
           {% for goods in object_list %}
-            <div class="product-item col-sm-4">
-              <a href="{% url 'Goods:detail' goods.id %}"  ><img src={{ goods.g_Picture.url}} alt="sample product"  width="70%" height="70%" />
+          <div class="product-item col-sm-4">
+            <a href="{% url 'Goods:detail' goods.id %}"  ><img src={{ goods.g_Picture.url}} alt="sample product"  width="60%" height="70%" />
               <h2 align="center">{{ goods.g_Name }} &nbsp;&nbsp;&nbsp;&nbsp; ¥{{ goods.g_Price }}</h2>
               <p>{{ goods.g_Description }}</p>
-              </a>
-              <a class="btn btn-default btn-xs pull-right" href="{% url 'Goods:detail' goods.id %}" type="button" >查看详情</a>
-            </div>
+            </a>
+            <a class="btn btn-default btn-xs pull-right" href="{% url 'Goods:detail' goods.id %}" type="button" >查看详情</a>
+          </div>
           {% endfor %}
+        {% endif %}
         </div><!-- /.row -->
         {% load paginator_tags %}
 
@@ -62,6 +76,5 @@
     </div><!-- /.row -->
   </div><!-- /.container -->
 </main>
-
 
 {% endblock %}

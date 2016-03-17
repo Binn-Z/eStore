@@ -17,7 +17,9 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
+from Goods.views import Goods_ListView
 urlpatterns = [
+    url(r'^$',Goods_ListView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^Customer/',include('Customer.urls',namespace="Customer")),
     # url(r'^Comment/',include('Comment.urls')),
