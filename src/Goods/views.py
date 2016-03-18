@@ -66,7 +66,27 @@ class Goods_DetailView(DetailView):
 	pk_url_kwarg='id'
 
 	def get_context_data(self, **kwargs):
+		userid=self.request.user.id
 		context = super(Goods_DetailView, self).get_context_data(**kwargs)
 		context['comment_list']=Comment.objects.filter(g_Id__exact=kwargs['object'].id)
+		if  userid != None:
+			c_Phone = User.objects.get(id=userid).username
+			customer = Customer.objects.get(c_Phone=c_Phone)
+			context['is_login'] = True
+		else:
+			context['is_login'] = False
+
 		return context
 
+#添加评论
+def addComment(request,**kwargs):
+	if request.method=='POST':
+		userid=request.user.id
+		if  userid != None:   			#获取当前登录用户
+			c_Phone = User.objects.get(id=userid).username
+			customer = Customer.objects.get(c_Phone=c_Phone)
+			comment=Comment(c_Id=customer,g_Id=Goods.objects.get(id=request.POST['Goods_id']),c_Content=request.POST.get('comment'))
+			comment.save()
+			return HttpResponse('添加成功')
+	
+	return HttpResponse('添加失败')

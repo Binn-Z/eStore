@@ -31,8 +31,23 @@
 </div>
 <div class="row">
 	<div class="col-md-2 " style="text-align:center"> 
-		<h3>商品评价:</h3>
+		<h3> 商品评价:</h3>
+		{% if is_login  %}
+		<table width="200px">
+			<tr>
+				<td>
+					<input id="btn-comment" style="width:80px;" class="btn btn-success " value="点击评价" />
+					<button  id="btn-cancel" style="visibility:hidden" class=" btn btn-success" >取消 </button>
+				</td>
+			</tr>
+		</table>
+		
+		<div id="div-comment" style="visibility:hidden">
+		 <textarea id="comment" rows="5" cols="50"></textarea><br><br>
+		</div>
+	{% endif %}
 	</div>
+
 	<div class="content-tertiary col-md-8 col-md-offset-2" >
 		<br>
 		{% if comment_list %}
@@ -81,7 +96,7 @@ $(function(){ //这里是加减按钮都启用的情况
 			alert("至少购买一件哦！");  
 		}  
     })
-    $("#addcart").click(function(){       
+    $("#addcart").click(function(){  //添加到购物车     
     	var jqxhr = $.post('addCart/', {
     		Goods_id:{{object.id}},
     		Goods_num:t.val(),
@@ -93,8 +108,37 @@ $(function(){ //这里是加减按钮都启用的情况
     		alert('失败: ' + xhr.status + ', 原因: ' + status);
     	});
 	})   
-});  
+}); 
 
+//点击评价
+$("#btn-comment").click(function(){   
+	if ($("#btn-comment").attr('value') =='点击评价'){
+		$("#btn-comment").attr('value','提交');
+		$("#div-comment").attr('style','visibility:none');
+		$("#btn-cancel").attr('style','visibility:none');
+	}
+	else{
+		var comment=$("#comment").val();
+		if (comment!=''){
+			var jqxhr = $.post('addComment/', {
+				comment:$("#comment").val(),
+				Goods_id:{{object.id}},
+			}).done(function (data) {
+				alert('提交成功');
+			});
+		}
+		$("#btn-comment").attr('value','点击评价');
+		$("#comment").val('');
+		$("#div-comment").attr('style','visibility:hidden');
+	}
+}) 
+
+$("#btn-cancel").click(function(){
+	$("#btn-comment").attr('value','点击评价');
+	$("#comment").val('');
+	$("#div-comment").attr('style','visibility:hidden');
+	$("#btn-cancel").attr('style','visibility:hidden');
+})
 
 </script>
 {% endblock %}

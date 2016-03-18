@@ -4,7 +4,7 @@ from django.db import models
 class Comment(models.Model):
 	c_Id=models.ForeignKey('Customer.Customer',verbose_name='顾客')
 	g_Id=models.ForeignKey('Goods.Goods',verbose_name='商品')
-	c_Date=models.DateField(verbose_name='评论日期')
+	c_Date=models.DateField(auto_now=True,verbose_name='评论日期')
 	c_Content=models.TextField(verbose_name='评论内容')
 
 	def __str__(self):

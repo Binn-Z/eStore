@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from  django.views.generic.list import ListView
 from  django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 
 from .models import Orders
 from Customer.models import Customer
@@ -38,6 +38,27 @@ class Orders_DetailView(DetailView):
 	model=Orders
 	template_name="OrdersDetail.html"
 	pk_url_kwarg='id'
+
+	def get_object(self,queryset=None):  
+		userid=self.request.user.id
+		if  userid != None:
+			c_Phone = User.objects.get(id=userid).username
+			customer = Customer.objects.get(c_Phone=c_Phone)
+			order_id=self.kwargs.get(self.pk_url_kwarg,None)
+			obj=get_object_or_404(self.get_queryset(),id=order_id,c_Id=customer.id)
+			print(obj)
+			return obj
+		else:
+			raise Http404
+			
+        # cnum=int(self.kwargs.get(self.pk_url_kwarg,None))  
+        # pnum=int(self.kwargs.get(self.pk_poke_kwargs,None))  
+        # query=self.get_queryset()  
+        # try:  
+        #     obj=query[pnum-1].cards.all()[cnum-1]  
+        # except IndexError:  
+        #     raise Http404  
+        # return obj  
 
 	def get_context_data(self, **kwargs):
 		context = super(Orders_DetailView, self).get_context_data(**kwargs)

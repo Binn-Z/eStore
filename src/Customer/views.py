@@ -60,6 +60,7 @@ def editAccount(request):
 		"updateform": updateform,
 		"c_Cost": obj.c_Cost,
 		"m_Level":obj.m_Level,
+		"m_Discount":obj.m_Level.m_Discount,
 	}
 
 	if 'deleteaccount' in request.POST:   #删除账号

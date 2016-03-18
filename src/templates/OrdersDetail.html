@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{object.id}}{% endblock %}
+{% block title %}订单详情{% endblock %}
 {% block content %}
+{% if object.count != 0 %}
 <div class="row">
 	<section class="content-primary col-md-5">
 		<div id="homepage-feature" >
@@ -24,4 +25,7 @@
 		</font>
 	</section>
 </div>
+{% else %}
+<h2 style="text-align:center">未找到您的订单</h2>
+{% endif %}
 {% endblock %}

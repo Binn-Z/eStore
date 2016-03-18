@@ -50,14 +50,18 @@
 <h2 style="text-align:center">您未登录</h2>
 {% endif %}
 
-<div id="dialog-form" title="创建新用户">
+<div id="dialog-form"  style="visibility:hidden" title="订单信息">
   <form id="dialogForm">
-    <label for="contact">联系方式</label>
+    <label for="contact">联系方式&nbsp;</label>
     <input type="text" name="contact" id="form-contact" value="{{ customer.c_Phone}}" class="text ui-widget-content ui-corner-all"><br>
-    <label for="address">&nbsp;&nbsp;&nbsp;地址&nbsp;&nbsp;&nbsp;</label>
+    <label for="address">&nbsp;&nbsp;&nbsp;地址&nbsp;&nbsp;&nbsp;&nbsp;</label>
     <input type="text" name="address" id="form-address" value="{{ customer.c_Address }}" class="text ui-widget-content ui-corner-all"><br>
-    <label for="description">&nbsp;&nbsp;&nbsp;备注&nbsp;&nbsp;&nbsp;</label>
-    <input type="text" name="description" id="form-description" value="" class="text ui-widget-content ui-corner-all">
+    <label for="description">&nbsp;&nbsp;&nbsp;备注&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <input type="text" name="description" id="form-description" value="" class="text ui-widget-content ui-corner-all"><br>
+    <label for="description">会员优惠x</label>
+    <input type="text" readonly="True" name="discount" id="form-discount" value="" class="text ui-widget-content ui-corner-all" ><br>
+    <label for="description">&nbsp;&nbsp;&nbsp;总额&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <input type="text" readonly="True" name="total" id="form-total" value="" class="text ui-widget-content ui-corner-all" >
   </form>
 </div>
 
@@ -283,6 +287,9 @@ $.ajaxSetup({
     //点击结算
     pay.onclick=function(){
     	if (priceTotal.innerHTML != 0) {
+    	$("#dialog-form").attr("style","visibility:none")
+    	$("#form-discount").val({{ customer.m_Level.m_Discount }}.toFixed(2))
+    	$("#form-total").val((priceTotal.innerHTML*{{ customer.m_Level.m_Discount }}).toFixed(2))
     	$("#dialog-form").dialog( "open" );
         } else {
             alert('请选择商品！');
