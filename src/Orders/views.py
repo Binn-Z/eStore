@@ -3,9 +3,11 @@ from  django.views.generic.list import ListView
 from  django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
 from django.http import HttpResponse,Http404
-
+from django.db import transaction
+from decimal import *
 from .models import Orders
 from Customer.models import Customer
+from Customer.models import Member
 # Create your views here.
 
 class Orders_ListView(ListView):
@@ -50,15 +52,7 @@ class Orders_DetailView(DetailView):
 			return obj
 		else:
 			raise Http404
-			
-        # cnum=int(self.kwargs.get(self.pk_url_kwarg,None))  
-        # pnum=int(self.kwargs.get(self.pk_poke_kwargs,None))  
-        # query=self.get_queryset()  
-        # try:  
-        #     obj=query[pnum-1].cards.all()[cnum-1]  
-        # except IndexError:  
-        #     raise Http404  
-        # return obj  
+		
 
 	def get_context_data(self, **kwargs):
 		context = super(Orders_DetailView, self).get_context_data(**kwargs)
@@ -85,19 +79,31 @@ class Cart_ListView(ListView):
 			context['is_login'] = False
 		return context
 
-
+#删除购物车
 def deleteCart(request):
 	cart=Orders.objects.get(id=request.POST.get('id'))
 	cart.delete()
 	return HttpResponse('ok')
 
+
+#付款
+@transaction.atomic()
 def payCart(request):
-	print(request.POST)
 	order=Orders.objects.get(id=request.POST.get('id'))
 	order.o_Amount=request.POST.get('amount')
 	order.o_Address=request.POST.get('address')
 	order.o_Description=request.POST.get('description')
 	order.o_Contact=request.POST.get('contact')
 	order.o_Status=1
+	order.o_total=int(order.o_Amount)*(order.g_Id.g_Price)*Decimal(order.g_Id.g_Discount)
 	order.save()
+	customer=order.c_Id
+	customer.c_Cost+=order.o_total
+	if customer.c_Cost>=1000:        #用户升级
+		customer.m_Level=Member.objects.get(m_Level=2)
+		
+	customer.save()
+	goods=order.g_Id
+	goods.g_Num-=int(order.o_Amount)
+	goods.save()
 	return HttpResponse('ok')

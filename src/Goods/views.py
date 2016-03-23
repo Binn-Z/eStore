@@ -3,12 +3,14 @@ from  django.views.generic.list import ListView
 from  django.views.generic.detail import DetailView
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.template.loader import get_template
+from django.template import Context
 from .models import Goods,Goods_Type
 from Customer.models import Customer
 from Comment.models import Comment
 from Orders.models import Orders
 from urllib.parse import unquote
-import re
+import re,json
 # Create your views here.
 
 def addCart(request,**kwargs):
@@ -90,3 +92,16 @@ def addComment(request,**kwargs):
 			return HttpResponse('添加成功')
 	
 	return HttpResponse('添加失败')
+
+
+#获取评论
+def getComment(request,**kwargs):
+	if request.POST:  #判断request请求是否是Ajax类型的
+		t = get_template('comment.html')  #获取模板内容
+		content_html = t.render(Context({'comment_list':Comment.objects.filter(g_Id__exact=request.POST.get("g_Id"))}))  #渲染模板生成想要的全部局部html内容，而不是某一个变量
+		payload = {
+	               'content_html': content_html,
+	               'success': True}            #构造json类型数据，以方便前端处理
+		return HttpResponse(json.dumps(payload) #这个地方最好保证用json的方法传送数据，否则会出现意想不到的错误
+	                         ) #用json类型返回数据到前端
+	return HttpResponse("failed")

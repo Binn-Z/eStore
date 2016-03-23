@@ -1,0 +1,25 @@
+<div  class="content-tertiary col-md-8 col-md-offset-2" >
+		<br>
+		{% if comment_list %}
+		<table >
+			<tr>
+				<td width="120" style="text-align:center"> 日期</td>
+				<td width="480" style="text-align:center">评价内容</td>
+				<td width="80">用户</td>
+			</tr>
+		</table>
+		{% for comment in comment_list %}
+		<font size="3">
+			<table >
+				<tr>
+					<td width="120"> {{comment.c_Date}}</td>
+					<td width="480" style="text-align:center">{{comment.c_Content}}</td>
+					<td width="80">{{comment.c_Id}}</td>
+				</tr>
+			</table>
+		</font><br>
+		{% endfor %}
+		{% else %}
+		<font size="3"> 无评价</font>
+		{% endif %}
+	</div>

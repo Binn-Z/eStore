@@ -90,6 +90,7 @@ DATABASES = {
         'HOST':'localhost',
         'USER':'MarketOL',
         'PASSWORD':'MarketOL',
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 

@@ -71,7 +71,7 @@ def editAccount(request):
 	if 'updateaccount' in request.POST:   #提交更新
 		if updateform.is_valid():
 			cd = updateform.cleaned_data
-			Customer.objects.filter(c_Phone=c_Phone).update(c_Name=cd.get('c_Name'), c_Address=cd.get('c_Address'), c_Password=cd.get('c_Password'))			
+			Customer.objects.filter(c_Phone=c_Phone).update(c_Name=cd.get('c_Name'), c_Address=cd.get('c_Address'))			
 	return render(request, "editAccount.html", context)
 
 #修改密码 changepassword_status：0(初始表单) -1(修改密码失败)  1(修改密码成功)
